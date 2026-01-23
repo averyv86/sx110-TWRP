@@ -113,8 +113,10 @@ jobs:
       
     - name: Clone device tree
       run: |
-        git clone ${{ github.event.inputs.DEVICE_TREE_URL }} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ./${{ github.event.inputs.DEVICE_PATH }}
+        git clone https://${{ secrets.GH_TOKEN }}@github.com/${DEVICE_TREE_URL#https://github.com/} -b ${{ github.event.inputs.DEVICE_TREE_BRANCH }} ./${{ github.event.inputs.DEVICE_PATH }}
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
+      env:
+        DEVICE_TREE_URL: ${{ github.event.inputs.DEVICE_TREE_URL }}
 
     - name: Clone common tree
       if: |
