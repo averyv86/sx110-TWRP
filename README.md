@@ -57,7 +57,23 @@ For example, your username is: JohnSmith
 
 ![image](https://user-images.githubusercontent.com/37921907/177915106-5bde6fc9-303c-479e-b290-22b48efd1e4e.png)
 
-#### 3. Change the [username and email](https://github.com/CaptainThrowback/Action-Recovery-Builder/blob/main/.github/workflows/Recovery%20Build.yml#L100-L101) in the workflow to reflect your Github credentials (optional)
+#### 3. Change the username and email in the workflows to reflect your Github credentials (optional)
+
+Edit these lines in both workflow files:
+- `.github/workflows/Recovery Build.yml` (lines 104-105)
+- `.github/workflows/Recovery Build (Legacy).yml` (lines 104-105)
+
+Change from:
+```yaml
+git config --global user.name "Azwhikaru"
+git config --global user.email "azwhikaru+37921907@users.noreply.github.com"
+```
+
+To your own credentials:
+```yaml
+git config --global user.name "YourGithubUsername"
+git config --global user.email "youremail@example.com"
+```
 
 ## Setting up SSH Keys (optional)
 
