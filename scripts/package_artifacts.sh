@@ -1,32 +1,25 @@
 #!/bin/bash
 
-# Variables
-DEVICE_NAME="your_device_name"  # Set your device name
-BUILD_TARGET="recovery"          # Set the build target to recovery
-OUT_DIR="workspace/out/target/product/${DEVICE_NAME}"
+DEVICE_NAME=$1
+BUILD_TARGET=$2
 
-# Collect the recovery image
-if [ -f "${OUT_DIR}/${BUILD_TARGET}.img" ]; then
-    cp "${OUT_DIR}/${BUILD_TARGET}.img" .
+# Collect output images
+mkdir -p workspace/artifacts
+cp workspace/out/target/product/$DEVICE_NAME/*.img workspace/artifacts/
+
+# Collect zip files
+cp workspace/out/dist/*.zip workspace/artifacts/
+
+# Create Odin tar.md5
+OUTPUT_FILES=""
+for img in recovery.img boot.img vendor_boot.img; do
+  if [ -f workspace/artifacts/$img ]; then
+    OUTPUT_FILES+="workspace/artifacts/$img "
+  fi
+done
+
+# Create tar.md5
+if [[ -n "$OUTPUT_FILES" ]]; then
+  tar -cvf workspace/artifacts/odin.tar $OUTPUT_FILES
+  md5sum workspace/artifacts/odin.tar >> workspace/artifacts/odin.tar.md5
 fi
-
-if [ -f "${OUT_DIR}/${BUILD_TARGET}.img.lz4" ]; then
-    cp "${OUT_DIR}/${BUILD_TARGET}.img.lz4" recovery.img
-else
-    cp "${OUT_DIR}/${BUILD_TARGET}.img" recovery.img
-fi
-
-# Collect flashable zips
-if [ -d "${OUT_DIR}" ]; then
-    cp "${OUT_DIR}/*.zip" .
-fi
-
-if [ -d "workspace/out/dist" ]; then
-    cp "workspace/out/dist/*.zip" .
-fi
-
-# Create tar.md5 containing recovery.img
-tar --format=gnu -cf recovery.tar .
-md5sum recovery.tar > recovery.md5
-
-exit 0
